@@ -16,6 +16,25 @@ public class BST<Integer>{
             this.parent = parent;
         }
     }
+    private Node next(Node currNode) {
+        int searchValue = currNode.value + 1;
+        while(currNode != null) {
+            if(currNode.value == searchValue) return currNode;
+            if(currNode.value > searchValue) {
+                currNode = currNode.left;
+            } else currNode = currNode.right;
+        }
+        return currNode.parent;
+    }
+    private void localPrint(Node printNode) {
+        try {
+            if (printNode.right != null) localPrint(printNode.right);
+            if (printNode.left != null) localPrint(printNode.left);
+            System.out.print(printNode.value + " ");
+        } catch (NullPointerException e) {
+            System.out.print("Tree is empty");
+        }
+    }
 
     public BST() {
         size = 0;
@@ -38,7 +57,7 @@ public class BST<Integer>{
 
             currentNode = new Node(parentNode, value);
             if(parentNode.value <= value) parentNode.right = currentNode;
-                else parentNode.left = currentNode;
+            else parentNode.left = currentNode;
 
         } else root = new Node(value);
 
@@ -50,19 +69,72 @@ public class BST<Integer>{
         while(currentNode != null) {
             if(currentNode.value == value) return true;
             if(currentNode.value > value) currentNode = currentNode.left;
-                else if(currentNode.value < value) currentNode = currentNode.right;
+            else if(currentNode.value < value) currentNode = currentNode.right;
         }
 
         return false;
     }
     public int size() { return size;}
+    public void remove(int value) {
+        Node remNode = root;
+        size--;
 
+        while(remNode != null) {
+            if(remNode.value == value) break;
+            if(remNode.value > value) remNode = remNode.left;
+            else if(remNode.value < value) remNode = remNode.right;
+        }
+        if(remNode == null) return;
+
+        if(remNode.left == null && remNode.right == null) {
+            if(remNode.parent.value > remNode.value) remNode.parent.left = null;
+            else remNode.parent.right = null;
+            return;
+        }
+        if(remNode.left == null) {
+            if(remNode.parent.value > remNode.value) {
+                remNode.parent.left = remNode.right;
+            } else {
+                remNode.parent.right = remNode.right;
+            }
+            return;
+        }
+        if(remNode.right == null) {
+            if(remNode.parent.value > remNode.value) {
+                remNode.parent.left = remNode.left;
+            } else {
+                remNode.parent.right = remNode.left;
+            }
+            return;
+        }
+        if(remNode.left != null && remNode.right != null) {
+            Node repNode = next(remNode);
+            repNode.right.parent = repNode.parent;
+
+            if(repNode.parent.value > repNode.value) {
+                repNode.parent.left = repNode.right;
+            } else repNode.parent.right = repNode.right;
+
+            repNode.parent = remNode.parent;
+            repNode.left = remNode.left;
+            remNode.left.parent = repNode;
+            repNode.right = remNode.right;
+            remNode.right.parent = repNode;
+
+            if(remNode.parent.value > remNode.value) {
+                remNode.parent.left = repNode;
+            } else remNode.parent.right = repNode;
+
+            return;
+        }
+    }
+    public void removeAll() {
+        size = 0;
+        root = null;
+    }
     public void printTree() {
         localPrint(root);
+        System.out.println();
     }
-    private void localPrint(Node printNode) {
-        if(printNode.right != null) localPrint(printNode.right);
-        if(printNode.left != null) localPrint(printNode.left);
-        System.out.print(printNode.value + " ");
-    }
+
 }
