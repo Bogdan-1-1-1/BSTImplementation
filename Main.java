@@ -6,6 +6,7 @@ public class Main {
         }
         bst.printTree();
         System.out.println(bst.contains(5));
+        System.out.println(bst.valOfLeaves(5));
         bst.remove(5);
         bst.printTree();
         System.out.println(bst.contains(5));
@@ -20,5 +21,7 @@ public class Main {
         }
         bst.printTree();
         System.out.println(bst.size());
+
+
     }
 }
