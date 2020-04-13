@@ -35,6 +35,17 @@ public class BST<Integer>{
             System.out.print("Tree is empty");
         }
     }
+    private int valOfLeavesByNode(Node currNode) {
+        try {
+            if (currNode.right != null && currNode.left != null)
+                return valOfLeavesByNode(currNode.right)+ valOfLeavesByNode(currNode.left) + 1;
+            if (currNode.left != null) return valOfLeavesByNode(currNode.left)+1;
+            if(currNode.right != null) return valOfLeavesByNode(currNode.right)+1;
+        } catch (NullPointerException e) {
+            return 0;
+        }
+        return 0;
+    }
 
     public BST() {
         size = 0;
@@ -136,5 +147,18 @@ public class BST<Integer>{
         localPrint(root);
         System.out.println();
     }
+    public int valOfLeaves(int value) {
+        Node currentNode = root;
+
+        while(currentNode != null) {
+            if(currentNode.value == value) break;
+            if(currentNode.value > value) currentNode = currentNode.left;
+            else if(currentNode.value < value) currentNode = currentNode.right;
+        }
+        if(currentNode == null) return 0;
+
+        return valOfLeavesByNode(currentNode);
+    }
 
 }
+
